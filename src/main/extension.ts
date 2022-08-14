@@ -163,11 +163,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const application: any = {
       email,
+      kubeconfig,
       organization: queryParams.get("organization"),
       application: queryParams.get("app"),
       service: queryParams.get("service"),
       action: queryParams.get("action"),
-      kubeconfig: queryParams.get("kubeconfig"),
       workloadType: queryParams.get("workload_type"),
       namespace: queryParams.get("namespace"),
       environment: queryParams.get("env"),

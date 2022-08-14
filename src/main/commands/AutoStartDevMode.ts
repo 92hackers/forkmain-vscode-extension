@@ -71,6 +71,13 @@ export default class AutoStartDevModeCommand implements ICommand {
         const rootNode = Promise.resolve(
           appTreeProvider as Pick<BaseNocalhostNode, "getChildren">
         );
+
+        // Refresh k8s resources tree.
+        await state.refreshTree(true);
+
+        // Wait 1 second
+        await this.sleep(1);
+
         const targetWorkloadNode: BaseNocalhostNode =
           await this.locateWorkerloadNode(rootNode, searchPath);
 
@@ -89,6 +96,12 @@ export default class AutoStartDevModeCommand implements ICommand {
         } else {
           host.log("Use an existing cluster!", true);
         }
+
+        // Refresh k8s resources tree.
+        await state.refreshTree(true);
+
+        // Wait 1 second
+        await this.sleep(1);
 
         const rootNode = Promise.resolve(
           appTreeProvider as Pick<BaseNocalhostNode, "getChildren">
@@ -153,6 +166,15 @@ export default class AutoStartDevModeCommand implements ICommand {
     }
   }
 
+  private async sleep(seconds: number) {
+    return new Promise((resolve) => {
+      const timeId: any = setTimeout(() => {
+        clearTimeout(timeId);
+        resolve(true);
+      }, seconds * 1000);
+    });
+  }
+
   private async addNewCluster(clusterNode: LocalClusterNode) {
     await LocalCluster.getLocalClusterRootNode(clusterNode);
 
@@ -163,8 +185,6 @@ export default class AutoStartDevModeCommand implements ICommand {
 
     // Refresh UI
     await state.refreshTree(true);
-
-    vscode.window.showInformationMessage("Success add cluster");
   }
 
   private async locateWorkerloadNode(rootNode: any, searchPath: string[]) {
